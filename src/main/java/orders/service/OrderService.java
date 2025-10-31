@@ -1,5 +1,8 @@
 package orders.service;
 
+import orders.dto.OrderCreateRequest;
+import orders.dto.OrderResponse;
+import orders.dto.OrderUpdateRequest;
 import orders.model.Order;
 import orders.repo.OrderRepository;
 import org.springframework.stereotype.Service;
@@ -26,19 +29,26 @@ public class OrderService {
 
     /**
      * Persist a new order.
-     * @param o order to be created
+     * @param req order to be created
      * @return the saved entity, including generated {@code id}
      */
-    public Order create(Order o) {
-        return repo.save(o);
+    public OrderResponse create(OrderCreateRequest req) {
+        Order o = new Order();
+        o.setNotes(req.notes());
+        o.setStatus(req.status());
+        o.setTotal(req.total());
+        Order saved = repo.save(o);
+        return toResponse(saved);
     }
 
     /**
      * Retrieve all orders.
      * @return list of orders (possibly empty)
      */
-    public List<Order> findAll() {
-        return repo.findAll();
+    public List<OrderResponse> findAll() {
+        return repo.findAll().stream()
+                .map(this::toResponse)
+                .toList();
     }
 
     /**
@@ -46,22 +56,25 @@ public class OrderService {
      * @param id primary key
      * @return the order if found, otherwise {@code null}
      */
-    public Order findById(Long id) {
-        return repo.findById(id).orElse(null);
+    public OrderResponse findById(Long id) {
+        return repo.findById(id)
+                .map(this::toResponse)
+                .orElse(null);
     }
 
     /**
      * Update basic fields of an existing order.
      * @param id identifier of the order to update
-     * @param input new field values
+     * @param req new field values
      * @return the updated order, or {@code null} if not found
      */
-    public Order update(Long id, Order input) {
+    public OrderResponse update(Long id, OrderUpdateRequest req) {
         return repo.findById(id).map(existing -> {
-            existing.setNotes(input.getNotes());
-            existing.setStatus(input.getStatus());
-            existing.setTotal(input.getTotal());
-            return repo.save(existing);
+            existing.setNotes(req.notes());
+            existing.setStatus(req.status());
+            existing.setTotal(req.total());
+            Order saved = repo.save(existing);
+            return toResponse(saved);
         }).orElse(null);
     }
 
@@ -76,5 +89,15 @@ public class OrderService {
             return true;
         }
         return false;
+    }
+
+    private OrderResponse toResponse(Order o) {
+        return new OrderResponse(
+                //o.getId(),
+                o.getNotes(),
+                o.getStatus(),
+                o.getTotal()
+                //o.getCreatedAt()
+        );
     }
 }
