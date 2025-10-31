@@ -3,6 +3,9 @@ package orders.controller;
 import orders.model.Order;
 import orders.service.OrderService;
 import jakarta.validation.Valid;
+import orders.dto.OrderCreateRequest;
+import orders.dto.OrderResponse;
+import orders.dto.OrderUpdateRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -44,9 +47,11 @@ public class OrderController {
      *         {@code Location} header pointing to {@code /api/orders/{id}}
      */
     @PostMapping
-    public ResponseEntity<Order> create(@Valid @RequestBody Order body) {
-        Order saved = service.create(body);
-        return ResponseEntity.created(URI.create("/api/orders/" + saved.getId())).body(saved);
+    public ResponseEntity<OrderResponse> create(@Valid @RequestBody OrderCreateRequest body) {
+        OrderResponse saved = service.create(body);
+        return ResponseEntity
+                .created(URI.create("/api/orders/"))
+                .body(saved);
     }
 
     /**
@@ -55,7 +60,7 @@ public class OrderController {
      * @return 200 OK with a JSON array of {@link Order} items (possibly empty)
      */
     @GetMapping
-    public List<Order> list() {
+    public List<OrderResponse> list() {
         return service.findAll();
     }
 
@@ -66,8 +71,8 @@ public class OrderController {
      * @return 200 OK with the {@link Order} if found; 404 Not Found otherwise
      */
     @GetMapping("/{id}")
-    public ResponseEntity<Order> get(@PathVariable Long id) {
-        Order o = service.findById(id);
+    public ResponseEntity<OrderResponse> get(@PathVariable Long id) {
+        OrderResponse o = service.findById(id);
         return (o == null) ? ResponseEntity.notFound().build() : ResponseEntity.ok(o);
     }
 
@@ -79,8 +84,8 @@ public class OrderController {
      * @return 200 OK with the updated {@link Order} if found; 404 Not Found otherwise
      */
     @PutMapping("/{id}")
-    public ResponseEntity<Order> update(@PathVariable Long id, @Valid @RequestBody Order body) {
-        Order updated = service.update(id, body);
+    public ResponseEntity<OrderResponse> update(@PathVariable Long id, @Valid @RequestBody OrderUpdateRequest body) {
+        OrderResponse updated = service.update(id, body);
         return (updated == null) ? ResponseEntity.notFound().build() : ResponseEntity.ok(updated);
     }
 
