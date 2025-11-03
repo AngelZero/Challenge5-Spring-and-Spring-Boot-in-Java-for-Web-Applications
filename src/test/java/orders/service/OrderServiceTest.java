@@ -28,11 +28,8 @@ class OrderServiceTest {
         OrderCreateRequest req = new OrderCreateRequest("n", "NEW", new BigDecimal("10.00"));
         Order saved = new Order();
         saved.setNotes("n"); saved.setStatus("NEW"); saved.setTotal(new BigDecimal("10.00"));
-        // simula PK y createdAt
-        // (si tu entidad los setea al persistir, puedes stubearlos aquí)
         when(repo.save(any(Order.class))).thenAnswer(inv -> {
             Order o = inv.getArgument(0);
-            // simula "persist"
             try {
                 var idField = Order.class.getDeclaredField("id");
                 idField.setAccessible(true);
