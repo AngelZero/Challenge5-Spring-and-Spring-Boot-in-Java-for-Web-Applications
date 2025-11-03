@@ -1,4 +1,4 @@
-# Order Service (Spring Boot)
+# Spring and Spring Boot in Java for Web Applications
 
 REST API for managing orders.
 
@@ -28,9 +28,9 @@ scripts\run-dev.ps1
 * App: [http://localhost:8080](http://localhost:8080)
 * H2 console (optional): [http://localhost:8080/h2-console](http://localhost:8080/h2-console)
 
-    * JDBC URL: `jdbc:h2:mem:ordersdb`
-    * User: `sa`
-    * Password: *(blank)*
+  * JDBC URL: `jdbc:h2:mem:ordersdb`
+  * User: `sa`
+  * Password: *(blank)*
 
 ### Prod (Docker: Postgres + app)
 
@@ -90,6 +90,16 @@ curl -X DELETE http://localhost:8080/api/orders/1 -i
 
 ---
 
+## Swagger / OpenAPI
+
+Auto-generated API docs are exposed by Springdoc.
+
+* **Swagger UI (interactive):**
+
+  * [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
+
+---
+
 ## Project structure
 
 ```
@@ -100,7 +110,7 @@ src/
       service/      # application logic
       repo/         # Spring Data JPA repositories
       model/        # JPA entities
-      dto/          # request/response DTOs (no IDs in API payloads)
+      dto/          # request/response DTOs
     resources/
       application.yml           # dev & prod profiles in one file
       application-test.yml      # test profile (H2, create-drop)
@@ -109,6 +119,7 @@ docker-compose.yml
 scripts/
   run-dev.ps1
   run-prod.ps1
+  run-test.ps1
 README.md
 DECISIONS.md
 postman/OrderService-Sprint1.postman_collection.json
@@ -129,7 +140,6 @@ postman/OrderService-Sprint1.postman_collection.json
 * **Dev**: `scripts\run-dev.ps1` runs `spring-boot:run` with `-Dspring-boot.run.profiles=dev`.
 * **Prod**: `docker compose` sets env vars and runs the app with `SPRING_PROFILES_ACTIVE=prod` inside the container.
 * **Test**: Tests annotate `@ActiveProfiles("test")` and load `src/test/resources/application-test.yml`.
-
 
 ### Environment variables (used by the app in prod)
 
@@ -156,15 +166,15 @@ Use **DBeaver / IntelliJ Database plugin**:
 
 ## Testing (JUnit) — `test` profile
 
-* Integration tests use **`@ActiveProfiles("test")`**.
-* `src/test/resources/application-test.yml` defines H2 with `ddl-auto: create-drop`.
-* Run:
+* Unit + integration tests run under **`@ActiveProfiles("test")`** using H2 (`create-drop`).
+* Run all tests:
 
-  ```powershell
-  .\mvnw.cmd -q test
-  ```
+```powershell
+.\mvnw.cmd -q test
+```
 
-  or directly from IntelliJ.
+* Run from IntelliJ as usual.
+* Optional coverage: add JaCoCo plugin if required by rubric.
 
 ---
 
