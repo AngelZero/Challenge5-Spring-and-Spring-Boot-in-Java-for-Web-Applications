@@ -93,7 +93,7 @@ public class OrderService {
 
     private OrderResponse toResponse(Order o) {
         return new OrderResponse(
-                //o.getId(),
+                o.getId(),
                 o.getNotes(),
                 o.getStatus(),
                 o.getTotal()

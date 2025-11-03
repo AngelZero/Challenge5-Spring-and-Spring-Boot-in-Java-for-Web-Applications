@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 
 /** API response. */
 public record OrderResponse(
-        //Long id,
+        Long id,
         String notes,
         String status,
         BigDecimal total
